@@ -33,12 +33,14 @@ def create_product(request):
         description = body.get("description")
         price = body.get("price")
         inventory_quantity = body.get("inventory_quantity")
+        image_link = body.get("image_link")
 
         product = Product.objects.create(
             title=title,
             description=description,
             price=price,
             inventory_quantity=inventory_quantity,
+            image_link=image_link,
         )
 
         return JsonResponse({"product": product.to_dict()}, status=201)
@@ -47,21 +49,20 @@ def create_product(request):
 @csrf_exempt
 def update_product(request, product_id):
     if request.method == "PUT":
-        try:
-            product = Product.objects.get(id=product_id)
-        except Product.DoesNotExist:
-            return JsonResponse({"error": "Product not found"}, status=404)
+        product = get_object_or_404(Product, pk=product_id)
 
-        body = json.loads(request.body)
+        body = json.loads(request.body.decode("utf-8"))
         title = body.get("title")
         description = body.get("description")
         price = body.get("price")
         inventory_quantity = body.get("inventory_quantity")
+        image_link = body.get("image_link")
 
         product.title = title
         product.description = description
         product.price = price
         product.inventory_quantity = inventory_quantity
+        product.image_link = image_link
         product.save()
 
         return JsonResponse({"product": product.to_dict()}, status=200)
