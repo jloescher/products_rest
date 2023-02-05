@@ -1,6 +1,6 @@
 import json
 from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Product
 
@@ -20,7 +20,8 @@ def product_detail(request, product_id):
             "description": product.description,
             "price": str(product.price),
             "inventory_quantity": product.inventory_quantity,
-        }
+        },
+        status=200,
     )
 
 
@@ -40,7 +41,7 @@ def create_product(request):
             inventory_quantity=inventory_quantity,
         )
 
-        return JsonResponse({"success": True}, status=200)
+        return JsonResponse({"product": product.to_dict()}, status=201)
 
 
 @csrf_exempt
@@ -64,3 +65,9 @@ def update_product(request, product_id):
         product.save()
 
         return JsonResponse({"product": product.to_dict()}, status=200)
+
+
+def delete_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    product.delete()
+    return HttpResponse(status=204)
