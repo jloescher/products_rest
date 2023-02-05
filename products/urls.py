@@ -10,7 +10,7 @@ from .views import (
 urlpatterns = [
     path("products/", products, name="products"),
     path("products/<int:product_id>/", product_detail, name="product_detail"),
-    path("products/create/", create_product, name="create_product"),
+    path("products/create", create_product, name="create_product"),
     path("products/<int:product_id>/update", update_product, name="update_product"),
     path("products/<int:product_id>/delete", delete_product, name="delete_product"),
 ]

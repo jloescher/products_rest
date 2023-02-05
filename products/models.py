@@ -12,3 +12,20 @@ class Product(models.Model):
     image_link = models.CharField(
         max_length=255, default="https://via.placeholder.com/300"
     )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "description": self.description,
+            "price": str(self.price),
+            "inventory_quantity": self.inventory_quantity,
+            "image_link": self.image_link,
+        }
+
+    def update_product(product, request_body):
+        for field in request_body:
+            if hasattr(product, field) and request_body[field] is not None:
+                setattr(product, field, request_body[field])
+        product.save()
+        return product
