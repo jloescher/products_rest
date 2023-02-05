@@ -41,3 +41,26 @@ def create_product(request):
         )
 
         return JsonResponse({"success": True}, status=200)
+
+
+@csrf_exempt
+def update_product(request, product_id):
+    if request.method == "PUT":
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            return JsonResponse({"error": "Product not found"}, status=404)
+
+        body = json.loads(request.body)
+        title = body.get("title")
+        description = body.get("description")
+        price = body.get("price")
+        inventory_quantity = body.get("inventory_quantity")
+
+        product.title = title
+        product.description = description
+        product.price = price
+        product.inventory_quantity = inventory_quantity
+        product.save()
+
+        return JsonResponse({"product": product.to_dict()}, status=200)
